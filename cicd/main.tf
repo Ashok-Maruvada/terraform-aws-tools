@@ -4,7 +4,7 @@ module "jenkins" {
   name = "jenkins-Master"
 
   instance_type          = "t3.small"
-  vpc_security_group_ids = ["sg-0f10b4b0d09399166"] #default VPC SG and give same in below for agent and nexus
+  vpc_security_group_ids = ["sg-0b79601d86b17db45"] #default VPC SG and give same in below for agent and nexus
   subnet_id = "subnet-01d795f2252cb194a" #any default Subnet ID 
   ami = data.aws_ami.ami_info.id
   user_data = file("jenkins.sh")
@@ -19,7 +19,7 @@ module "jenkins_agent" {
   name = "jenkins-agent"
 
   instance_type          = "t3.micro"
-  vpc_security_group_ids = ["sg-0f10b4b0d09399166"]
+  vpc_security_group_ids = ["sg-0b79601d86b17db45"]
   # convert StringList to list and get first element
   subnet_id = "subnet-01d795f2252cb194a"
   ami = data.aws_ami.ami_info.id
