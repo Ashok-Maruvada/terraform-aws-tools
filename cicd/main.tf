@@ -1,15 +1,15 @@
 module "jenkins" {
   source  = "terraform-aws-modules/ec2-instance/aws"
 
-  name = "jenkins-tf"
+  name = "jenkins-Master"
 
   instance_type          = "t3.small"
-  vpc_security_group_ids = ["sg-0fea5e49e962e81c9"] #replace your SG
-  subnet_id = "subnet-0ea509ad4cba242d7" #replace your Subnet
+  vpc_security_group_ids = ["sg-0f10b4b0d09399166"] #default VPC SG and give same in below for agent and nexus
+  subnet_id = "subnet-01d795f2252cb194a" #any default Subnet ID 
   ami = data.aws_ami.ami_info.id
   user_data = file("jenkins.sh")
   tags = {
-    Name = "jenkins-tf"
+    Name = "jenkins-Master"
   }
 }
 
@@ -18,10 +18,10 @@ module "jenkins_agent" {
 
   name = "jenkins-agent"
 
-  instance_type          = "t3.small"
-  vpc_security_group_ids = ["sg-0fea5e49e962e81c9"]
+  instance_type          = "t3.micro"
+  vpc_security_group_ids = ["sg-0f10b4b0d09399166"]
   # convert StringList to list and get first element
-  subnet_id = "subnet-0ea509ad4cba242d7"
+  subnet_id = "subnet-01d795f2252cb194a"
   ami = data.aws_ami.ami_info.id
   user_data = file("jenkins-agent.sh")
   tags = {
@@ -29,20 +29,20 @@ module "jenkins_agent" {
   }
 }
 
-module "nexus" {
-  source  = "terraform-aws-modules/ec2-instance/aws"
+# module "nexus" {
+#   source  = "terraform-aws-modules/ec2-instance/aws"
 
-  name = "nexus"
+#   name = "nexus"
 
-  instance_type          = "t3.small"
-  vpc_security_group_ids = ["sg-0fea5e49e962e81c9"]
-  # convert StringList to list and get first element
-  subnet_id = "subnet-0ea509ad4cba242d7"
-  ami = data.aws_ami.nexus_ami_info.id
-  tags = {
-    Name = "nexus"
-  }
-}
+#   instance_type          = "t3.small"
+#   vpc_security_group_ids = ["sg-0f10b4b0d09399166"]
+#   # convert StringList to list and get first element
+#   subnet_id = "subnet-01d795f2252cb194a"
+#   ami = data.aws_ami.nexus_ami_info.id
+#   tags = {
+#     Name = "nexus"
+#   }
+# }
 
 module "records" {
   source  = "terraform-aws-modules/route53/aws//modules/records"
@@ -66,15 +66,15 @@ module "records" {
       records = [
         module.jenkins_agent.private_ip
       ]
-    },
-    {
-      name    = "nexus"
-      type    = "A"
-      ttl     = 1
-      records = [
-        module.nexus.private_ip
-      ]
     }
+    # {
+    #   name    = "nexus"
+    #   type    = "A"
+    #   ttl     = 1
+    #   records = [
+    #     module.nexus.private_ip
+    #   ]
+    # }
   ]
 
 }
