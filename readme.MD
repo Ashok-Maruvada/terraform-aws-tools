@@ -1,6 +1,6 @@
 # Jenkins
 
-** Plugins: **
+**Plugins:**
 
 * Pipeline stage view
 * AnsiColor
