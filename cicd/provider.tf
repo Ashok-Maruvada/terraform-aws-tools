@@ -2,18 +2,21 @@ terraform {
   required_providers {
     aws = {
       source = "hashicorp/aws"
-      version = "5.48.0"
+      version = "5.50.0" 
+      #provider-version
     }
   }
   backend "s3" {
-    bucket = "daws78s-remote-state"
+    # bucket name will be the AWS bucket name created in AWS
+    bucket = "daws-remote-state"
+    # key name is to specify remote state files in aws- change the key name according to infra creation
     key    = "jenkins"
     region = "us-east-1"
-    dynamodb_table = "daws78s-locking"
+    #dynamodb table name created in AWS
+    dynamodb_table = "daws-locking"
   }
 }
 
-#provide authentication here
 provider "aws" {
-  region = "us-east-1"
+    region = "us-east-1"
 }
