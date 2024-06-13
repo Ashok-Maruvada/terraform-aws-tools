@@ -28,21 +28,36 @@ module "jenkins_agent" {
     Name = "jenkins-agent"
   }
 }
+# keeping public key in server and login with private key
+resource "aws_key_pair" "tools" {
+  key_name = "tools"
+  # you can paste the public key directly like this
+  #public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILXDe5ueCdCaBhf3s1CQN2sIrNjrzLvvykPE6II6odX6 ashok@INBook_X1"
+  public_key = file("C:/D-AWS/Devops/Key/tools.pub")
+  # ~ means windows home directory
+}
 
-# module "nexus" {
-#   source  = "terraform-aws-modules/ec2-instance/aws"
+module "nexus" {
+  source  = "terraform-aws-modules/ec2-instance/aws"
 
-#   name = "nexus"
+  name = "nexus"
 
-#   instance_type          = "t3.small"
-#   vpc_security_group_ids = ["sg-0f10b4b0d09399166"]
-#   # convert StringList to list and get first element
-#   subnet_id = "subnet-01d795f2252cb194a"
-#   ami = data.aws_ami.nexus_ami_info.id
-#   tags = {
-#     Name = "nexus"
-#   }
-# }
+  instance_type          = "t3.medium"
+  vpc_security_group_ids = ["sg-0b79601d86b17db45"]
+  # convert StringList to list and get first element
+  subnet_id = "subnet-01d795f2252cb194a"
+  ami = data.aws_ami.nexus_ami_info.id
+  key_name = aws_key_pair.tools.key_name
+  root_block_device = [
+    {
+      volume_type = "gp3"
+      volume_size = 30
+    }
+  ]
+  tags = {
+    Name = "nexus"
+  }
+}
 
 module "records" {
   source  = "terraform-aws-modules/route53/aws//modules/records"
