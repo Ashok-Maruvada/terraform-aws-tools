@@ -67,14 +67,14 @@ module "records" {
         module.jenkins_agent.private_ip
       ]
     }
-    # {
-    #   name    = "nexus"
-    #   type    = "A"
-    #   ttl     = 1
-    #   records = [
-    #     module.nexus.private_ip
-    #   ]
-    # }
+    {
+      name    = "nexus"
+      type    = "A"
+      ttl     = 1
+      records = [
+        module.nexus.private_ip
+      ]
+    }
   ]
 
 }
